@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.tb.dao.TbPostDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.tb.entity.TbPostEntity" id="tbPostMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="images" column="images"/>
+        <result property="topicId" column="topic_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="status" column="status"/>
+        <result property="createDate" column="create_date"/>
+    </resultMap>
+
+    <select id="queryPage"  resultType="io.renren.tb.entity.view.TbPostView" parameterType="map">
+        select
+            tp.id as id,
+            tp.user_id as userId,
+            tu.image as headImage,
+            tu.username as username,
+            tp.content as content,
+            tp.images as images,
+            tp.create_date as createDate,
+            tp.type as type,
+            tp.topicId as topicId,
+            tt.title as topicTitle,
+            (select count(1) from tb_comment WHERE post_id = tp.id and `status` = 0) as commentNumber,
+            (select count(1) from tb_like where post_id = tp.id) as likeNumber
+        from tb_post as tp
+        inner join tb_user as tu on tp.user_id = tu.user_id
+        inner join tb_topic as tt on tp.topic_id = tt.id
+
+
+    </select>
+
+</mapper>
